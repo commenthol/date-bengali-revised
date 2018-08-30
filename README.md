@@ -3,7 +3,7 @@
 > Revised Bengali Calendar
 
 [![NPM version](https://badge.fury.io/js/date-bengali-revised.svg)](https://www.npmjs.com/package/date-bengali-revised/)
-[![Build Status](https://secure.travis-ci.org/commenthol/date-bengali-revised.svg?branch=master)](https://travis-ci.org/commenthol/date-bengali-revised)
+[![Build Status](https://api.travis-ci.com/commenthol/date-bengali-revised.svg?branch=master)](https://travis-ci.com/commenthol/date-bengali-revised)
 
 Revised Bengali Calendar calculations with conversion from/ to Gregorian Date.  
 The revised version of the Bengali calendar was officially adopted in Bangladesh in 1987.
