@@ -1,0 +1,61 @@
+{
+  "name": "date-bengali-revised",
+  "version": "1.0.0-0",
+  "description": "Revised Bengali Calendar",
+  "keywords": [
+    "calendar",
+    "bengali",
+    "revised",
+    "conversion",
+    "gregorian"
+  ],
+  "homepage": "https://github.com/commenthol/date-bengali-revised",
+  "bugs": {
+    "url": "https://github.com/commenthol/date-bengali-revised/issues"
+  },
+  "license": "MIT",
+  "author": "commenthol <commenthol@gmail.com>",
+  "main": "lib",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/commenthol/date-bengali-revised.git"
+  },
+  "scripts": {
+    "all": "npm-run-all clean lint build test",
+    "build": "babel -d lib src",
+    "build:es5": "BABEL_ENV=es5 babel -d es src",
+    "clean": "rimraf lib es coverage .nyc_output",
+    "clean:all": "npm-run-all clean clean:modules",
+    "clean:modules": "rimraf node_modules",
+    "coverage": "nyc -r text -r html npm test",
+    "lint": "eslint '**/*.js'",
+    "prepublishOnly": "npm run all",
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^5.0.5",
+    "npm-run-all": "^4.1.3",
+    "nyc": "^11.6.0",
+    "rimraf": "^2.6.2"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "maintainers": [
+    "commenthol <commenthol@gmail.com>"
+  ]
+}

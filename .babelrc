@@ -1,0 +1,29 @@
+{
+  "env": {
+    "development": {
+      "presets": [
+        "env",
+        "stage-2"
+      ]
+    },
+    "es5": {
+      "presets": [
+        [
+          "env",
+          {
+            "targets": {
+              "node": "current",
+              "browsers": [
+                "last 2 versions",
+                "ie >= 11"
+              ]
+            },
+            "modules": false,
+            "loose": true
+          }
+        ],
+        "stage-2"
+      ]
+    }
+  }
+}
