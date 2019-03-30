@@ -1,7 +1,7 @@
 import assert from 'assert'
 import Calendar from '../src'
 
-describe('#CalendarBangalModern', function () {
+describe('#CalendarBengaliRevised', function () {
   const tests = [
     [[593, 4, 14], [0, 1, 1], ['০', 'বৈশাখ', '১']],
     [[2018, 4, 14], [1425, 1, 1], ['১৪২৫', 'বৈশাখ', '১']],
