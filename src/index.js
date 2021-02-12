@@ -9,7 +9,7 @@ import {
   weekDay,
   monthName,
   seasonName
-} from './convert'
+} from './convert.js'
 
 const YEAR0 = 593
 const MILLISECONDS_PER_DAY = 86400000
@@ -20,7 +20,7 @@ const isLeapYear = (year) => ((year % 4 === 0) && (year % 100 !== 0)) || (year %
 const UTC6 = 6 // timezone offset UTC+6
 const toEpoch = year => Date.UTC(year, 3, 13, UTC6)
 
-export default class CalendarBengaliRevised {
+export class CalendarBengaliRevised {
   /**
    * @constructor
    * @param {Number|String} year - bengali year
@@ -143,3 +143,5 @@ export default class CalendarBengaliRevised {
       .replace(/D/g, digitToBangla(this.day))
   }
 }
+
+export default CalendarBengaliRevised
