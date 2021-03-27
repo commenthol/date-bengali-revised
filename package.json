@@ -1,6 +1,6 @@
 {
   "name": "date-bengali-revised",
-  "version": "2.0.0-0",
+  "version": "2.0.0",
   "description": "Revised Bengali Calendar",
   "keywords": [
     "bengali",
@@ -54,7 +54,6 @@
     "checkLeaks": true,
     "colors": true
   },
-  "dependencies": {},
   "devDependencies": {
     "c8": "^7.5.0",
     "dtslint": "^4.0.7",
