@@ -1,5 +1,5 @@
 import assert from 'assert'
-import Calendar from '../src'
+import Calendar from '../src/index.js'
 
 describe('#CalendarBengaliRevised', function () {
   const tests = [

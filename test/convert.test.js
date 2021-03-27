@@ -3,7 +3,7 @@ import {
   digitToBangla,
   banglaToDigit,
   monthName
-} from '../src/convert'
+} from '../src/convert.js'
 
 const monthNames = [
   ['বৈশাখ', 1],
