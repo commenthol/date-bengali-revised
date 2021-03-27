@@ -23,7 +23,6 @@
     "commenthol <commenthol@gmail.com>"
   ],
   "type": "module",
-  "main": "./lib/index.cjs",
   "exports": {
     ".": {
       "import": "./src/index.js",
@@ -31,6 +30,7 @@
     },
     "./package.json": "./package.json"
   },
+  "main": "./lib/index.cjs",
   "typings": "./types",
   "directories": {
     "lib": "lib",
