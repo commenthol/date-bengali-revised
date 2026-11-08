@@ -13,13 +13,22 @@ import {
 
 const YEAR0 = 593
 const MILLISECONDS_PER_DAY = 86400000
-const monthDaysNorm = [31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30, 30]
-const monthDaysLeap = [31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 31, 30]
+const monthDaysNormOld = [31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30, 30]
+const monthDaysLeapOld = [31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 31, 30]
+const monthDaysNorm = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 29, 30]
+const monthDaysLeap = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30]
 
 const isLeapYear = (year) =>
   (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
 const UTC6 = 6 // timezone offset UTC+6
+const CALENDAR_CUTOVER = Date.UTC(2019, 9, 16, UTC6)
 const toEpoch = (year) => Date.UTC(year, 3, 13, UTC6)
+const monthDaysFor = (year, revised) => {
+  if (revised) {
+    return isLeapYear(year) ? monthDaysLeap : monthDaysNorm
+  }
+  return isLeapYear(year) ? monthDaysLeapOld : monthDaysNormOld
+}
 
 export class CalendarBengaliRevised {
   /**
@@ -44,7 +53,8 @@ export class CalendarBengaliRevised {
    * @returns {this}
    */
   fromGregorian(year, month, day) {
-    const monthDays = isLeapYear(year) ? monthDaysLeap : monthDaysNorm
+    const date = Date.UTC(year, month - 1, day, UTC6)
+    const monthDays = monthDaysFor(year, date >= CALENDAR_CUTOVER)
 
     let _year = year
     if (month < 4 || (month === 4 && day < 14)) {
@@ -52,7 +62,6 @@ export class CalendarBengaliRevised {
     }
     this.year = _year - YEAR0
 
-    const date = Date.UTC(year, month - 1, day, UTC6)
     let days = Math.floor((date - toEpoch(_year)) / MILLISECONDS_PER_DAY)
 
     for (let i = 0; i < monthDays.length; i++) {
@@ -101,14 +110,19 @@ export class CalendarBengaliRevised {
     const year = this.year + YEAR0
     const epoch = toEpoch(year)
     const _year = this.month > 10 ? year + 1 : year
-    const monthDays = isLeapYear(_year) ? monthDaysLeap : monthDaysNorm
-
-    let days = this.day
-    for (let i = 0; i < this.month - 1; i++) {
-      days += monthDays[i]
+    const dateFromMonthDays = (monthDays) => {
+      let days = this.day
+      for (let i = 0; i < this.month - 1; i++) {
+        days += monthDays[i]
+      }
+      return new Date(days * MILLISECONDS_PER_DAY + epoch)
     }
-    const date = new Date(days * MILLISECONDS_PER_DAY + epoch)
-    return date
+
+    const oldDate = dateFromMonthDays(monthDaysFor(_year, false))
+    if (oldDate.getTime() < CALENDAR_CUTOVER) {
+      return oldDate
+    }
+    return dateFromMonthDays(monthDaysFor(_year, true))
   }
 
   /**
