@@ -1,9 +1,5 @@
 import assert from 'assert'
-import {
-  digitToBangla,
-  banglaToDigit,
-  monthName
-} from '../src/convert.js'
+import { digitToBangla, banglaToDigit, monthName } from '../src/convert.js'
 
 const monthNames = [
   ['বৈশাখ', 1],

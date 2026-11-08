@@ -6,7 +6,7 @@
 [![Build Status](https://github.com/commenthol/date-bengali-revised/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/commenthol/date-bengali-revised/actions/workflows/ci.yml?query=branch%3Amaster)
 
 Revised Bengali Calendar calculations with conversion from/ to Gregorian Date.  
-The revised version of the Bengali calendar was officially adopted in Bangladesh in 1987.
+The Bangladesh national calendar's 1987 rules were used until 15 October 2019; the revised rules took effect on 16 October 2019.
 
 The module supports:
 

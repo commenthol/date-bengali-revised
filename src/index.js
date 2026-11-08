@@ -13,40 +13,48 @@ import {
 
 const YEAR0 = 593
 const MILLISECONDS_PER_DAY = 86400000
-const monthDaysNorm = [31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30, 30]
-const monthDaysLeap = [31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 31, 30]
+const monthDaysNormOld = [31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30, 30]
+const monthDaysLeapOld = [31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 31, 30]
+const monthDaysNorm = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 29, 30]
+const monthDaysLeap = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30]
 
-const isLeapYear = (year) => ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)
+const isLeapYear = (year) =>
+  (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0
 const UTC6 = 6 // timezone offset UTC+6
-const toEpoch = year => Date.UTC(year, 3, 13, UTC6)
+const CALENDAR_CUTOVER = Date.UTC(2019, 9, 16, UTC6)
+const toEpoch = (year) => Date.UTC(year, 3, 13, UTC6)
+const monthDaysFor = (year, revised) => {
+  if (revised) {
+    return isLeapYear(year) ? monthDaysLeap : monthDaysNorm
+  }
+  return isLeapYear(year) ? monthDaysLeapOld : monthDaysNormOld
+}
 
 export class CalendarBengaliRevised {
   /**
-   * @constructor
-   * @param {Number|String} year - bengali year
-   * @param {Number|String} month - (int) 1...12
-   * @param {Number|String} day - 1...31
-   * @return {Object} this
+   * @param {number|string} [year] - bengali year
+   * @param {number|string} [month] - (int) 1...12
+   * @param {number|string} [day] - 1...31
    */
-  constructor (year, month, day) {
-    Object.assign(this, {
-      year: banglaToDigit(year),
-      month: banglaToDigit(month) || 1,
-      day: banglaToDigit(day) || 1
-    })
+  constructor(year, month, day) {
+    /** @type {number} */
+    this.year = banglaToDigit(year)
+    /** @type {number} */
+    this.month = banglaToDigit(month) || 1
+    /** @type {number} */
+    this.day = banglaToDigit(day) || 1
   }
 
   /**
    * convert gregorian date to bengali calendar date
-   * @param {Number} year - (int) year in Gregorian Calendar
-   * @param {Number} month - (int)
-   * @param {Number} day - (int)
-   * @return {Object} this
+   * @param {number} year - (int) year in Gregorian Calendar
+   * @param {number} month - (int)
+   * @param {number} day - (int)
+   * @returns {this}
    */
-  fromGregorian (year, month, day) {
-    const monthDays = isLeapYear(year)
-      ? monthDaysLeap
-      : monthDaysNorm
+  fromGregorian(year, month, day) {
+    const date = Date.UTC(year, month - 1, day, UTC6)
+    const monthDays = monthDaysFor(year, date >= CALENDAR_CUTOVER)
 
     let _year = year
     if (month < 4 || (month === 4 && day < 14)) {
@@ -54,7 +62,6 @@ export class CalendarBengaliRevised {
     }
     this.year = _year - YEAR0
 
-    const date = Date.UTC(year, month - 1, day, UTC6)
     let days = Math.floor((date - toEpoch(_year)) / MILLISECONDS_PER_DAY)
 
     for (let i = 0; i < monthDays.length; i++) {
@@ -72,20 +79,21 @@ export class CalendarBengaliRevised {
   /**
    * convert date to bengali calendar date
    * @param {Date} date - javascript date object - uses local date
-   * @return {Object} this
+   * @returns {this}
    */
-  fromDate (date) {
-    return this.fromGregorian(date.getFullYear(), date.getMonth() + 1, date.getDate())
+  fromDate(date) {
+    return this.fromGregorian(
+      date.getFullYear(),
+      date.getMonth() + 1,
+      date.getDate()
+    )
   }
 
   /**
    * convert bengali date to gregorian date
-   * @return {Object} date in gregorian (preleptic) calendar
-   *   {Number} year - (int)
-   *   {Number} month - (int) 1...12
-   *   {Number} day - (int) 1...31
+   * @returns {{ year: number, month: number, day: number }} date in gregorian (preleptic) calendar
    */
-  toGregorian () {
+  toGregorian() {
     const date = this.toDate()
     return {
       year: date.getUTCFullYear(),
@@ -98,25 +106,28 @@ export class CalendarBengaliRevised {
    * convert bengali date to Date
    * @return {Date} javascript date object in gregorian (preleptic) calendar
    */
-  toDate () {
+  toDate() {
     const year = this.year + YEAR0
     const epoch = toEpoch(year)
     const _year = this.month > 10 ? year + 1 : year
-    const monthDays = isLeapYear(_year)
-      ? monthDaysLeap
-      : monthDaysNorm
-
-    let days = this.day
-    for (let i = 0; i < this.month - 1; i++) {
-      days += monthDays[i]
+    const dateFromMonthDays = (monthDays) => {
+      let days = this.day
+      for (let i = 0; i < this.month - 1; i++) {
+        days += monthDays[i]
+      }
+      return new Date(days * MILLISECONDS_PER_DAY + epoch)
     }
-    const date = new Date(days * MILLISECONDS_PER_DAY + epoch)
-    return date
+
+    const oldDate = dateFromMonthDays(monthDaysFor(_year, false))
+    if (oldDate.getTime() < CALENDAR_CUTOVER) {
+      return oldDate
+    }
+    return dateFromMonthDays(monthDaysFor(_year, true))
   }
 
   /**
    * format date in bengali
-   * @param {String} formatStr - string formatter
+   * @param {string} [formatStr] - string formatter
    *
    * | Input | Description  |
    * | ----- | ------------ |
@@ -127,9 +138,9 @@ export class CalendarBengaliRevised {
    * | D     | Day of month |
    * | dddd  | Day name     |
    *
-   * @return {String}
+   * @return {string}
    */
-  format (formatStr) {
+  format(formatStr) {
     formatStr = formatStr || 'D M, Y'
     if (/dddd/.test(formatStr)) {
       const date = this.toDate()
