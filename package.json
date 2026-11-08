@@ -38,6 +38,11 @@
     "lib": "lib",
     "test": "test"
   },
+  "files": [
+    "lib",
+    "src",
+    "types"
+  ],
   "scripts": {
     "all": "run-s clean pretty lint types build test",
     "build": "rollup -c",
